@@ -4,6 +4,8 @@ netty
 
 A GO library for common network tools, such as ip/iptables/tc.
 
+*Notice*: This lib is not productive now. Lack tests.
+
 ip
 ---
 
