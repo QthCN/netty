@@ -23,4 +23,4 @@ Get interface detail ::
     }
 
     details, e := ipCmd.GetInterfaceDetails("enp0s10")
-    //details is map[state:UP mtu:1500]
+    //details is map[mtu:1500 state:UP name:enp0s10]
