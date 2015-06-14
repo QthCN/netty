@@ -11,7 +11,10 @@ func main() {
 		Namespace: "ns0",
 	}
 
-	fmt.Printf(ipCmd.GetNamespace())
-	ipCmd.SetNamespace("aa")
-	fmt.Printf(ipCmd.GetNamespace())
+	//fmt.Printf(ipCmd.GetNamespace())
+	ipCmd.SetNamespace("")
+	//fmt.Printf(ipCmd.GetNamespace())
+	r, e := ipCmd.GetInterfacesName()
+	fmt.Print(r)
+	fmt.Print(e)
 }
