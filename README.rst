@@ -8,6 +8,7 @@ ip
 ---
 
 ip link show ::
+
     ipCmd := &lib.IpCmd{
         Namespace: "ns0",
     }
