@@ -4,6 +4,8 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
+
+	"common"
 )
 
 type IpCmd struct {
@@ -27,7 +29,6 @@ func (ipCmd *IpCmd) getCmdPrefixArgvs() []string {
 	}
 }
 
-//ip link show
 func (ipCmd *IpCmd) GetInterfacesName() ([]string, error) {
 	ifName := []string{}
 	argv := ipCmd.getCmdPrefixArgvs()
@@ -49,4 +50,29 @@ func (ipCmd *IpCmd) GetInterfacesName() ([]string, error) {
 	}
 
 	return ifName, nil
+}
+
+func (ipCmd *IpCmd) GetInterfaceDetails(ifName string) (map[string]string, error) {
+	details := make(map[string]string)
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "link", "show", ifName)
+	c := exec.Command("ip", argv...)
+	d, err := c.Output()
+	if err != nil {
+		return nil, err
+	}
+
+	output := strings.Split(string(d), "\n")
+
+	if len(output) < 1 {
+		return nil, &common.StrError{"No such Interface:" + ifName}
+	}
+
+	ifNameRegexp := regexp.MustCompile(`\d: (\w+): <.*> mtu (\d+) .* state (\w+) mode.*`)
+	matched := ifNameRegexp.FindStringSubmatch(output[0])
+	details["name"] = ifName
+	details["mtu"] = matched[len(matched)-2]
+	details["state"] = matched[len(matched)-1]
+
+	return details, nil
 }
