@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -23,7 +24,7 @@ func (ipCmd *IpCmd) SetNamespace(ns string) string {
 
 func (ipCmd *IpCmd) getCmdPrefixArgvs() []string {
 	if ipCmd.GetNamespace() != "" {
-		return []string{"netns", "exec", ipCmd.GetNamespace()}
+		return []string{"netns", "exec", ipCmd.GetNamespace(), "ip"}
 	} else {
 		return []string{}
 	}
@@ -56,6 +57,7 @@ func (ipCmd *IpCmd) GetInterfaceDetails(ifName string) (map[string]string, error
 	details := make(map[string]string)
 	argv := ipCmd.getCmdPrefixArgvs()
 	argv = append(argv, "link", "show", ifName)
+	fmt.Print(argv)
 	c := exec.Command("ip", argv...)
 	d, err := c.Output()
 	if err != nil {
