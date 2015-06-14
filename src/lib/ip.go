@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"fmt"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -22,6 +21,30 @@ func (ipCmd *IpCmd) SetNamespace(ns string) string {
 	return ipCmd.Namespace
 }
 
+func (ipCmd *IpCmd) AddNamespace(ns string) error {
+	argv := []string{"netns", "add", ns}
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
+
+func (ipCmd *IpCmd) DeleteNamespace(ns string) error {
+	argv := []string{"netns", "del", ns}
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
+
+func (ipCmd *IpCmd) ListNamespaces() ([]string, error) {
+	argv := []string{"netns", "list"}
+	c := exec.Command("ip", argv...)
+	d, err := c.Output()
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(string(d), "\n"), nil
+}
+
 func (ipCmd *IpCmd) getCmdPrefixArgvs() []string {
 	if ipCmd.GetNamespace() != "" {
 		return []string{"netns", "exec", ipCmd.GetNamespace(), "ip"}
@@ -30,7 +53,7 @@ func (ipCmd *IpCmd) getCmdPrefixArgvs() []string {
 	}
 }
 
-func (ipCmd *IpCmd) GetInterfacesName() ([]string, error) {
+func (ipCmd *IpCmd) ListInterfaces() ([]string, error) {
 	ifName := []string{}
 	argv := ipCmd.getCmdPrefixArgvs()
 	argv = append(argv, "link", "show")
@@ -57,7 +80,6 @@ func (ipCmd *IpCmd) GetInterfaceDetails(ifName string) (map[string]string, error
 	details := make(map[string]string)
 	argv := ipCmd.getCmdPrefixArgvs()
 	argv = append(argv, "link", "show", ifName)
-	fmt.Print(argv)
 	c := exec.Command("ip", argv...)
 	d, err := c.Output()
 	if err != nil {

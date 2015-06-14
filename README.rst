@@ -9,13 +9,31 @@ A GO library for common network tools, such as ip/iptables/tc.
 ip
 ---
 
+Get Namespaces ::
+
+    ipCmd := &lib.IpCmd{}
+    ns, e := ipCmd.ListNamespaces()
+    //ns is [ns1 ns0 ]
+
+Add Namespace ::
+
+    ipCmd := &lib.IpCmd{}
+    e := ipCmd.AddNamespace("ns")
+    // ip netns list will get 'ns' now
+
+Delete Namespace ::
+
+    ipCmd := &lib.IpCmd{}
+    e := ipCmd.DeleteNamespace("ns")
+    // ip netns list will not get 'ns' now
+
 Get interfaces ::
 
     ipCmd := &lib.IpCmd{
         Namespace: "ns0",
     }
 
-    ifNames, e := ipCmd.GetInterfacesName()
+    ifNames, e := ipCmd.ListInterfaces()
     //ifNames is [lo enp0s3 enp0s8 enp0s9 enp0s10]
 
 Get interface detail ::
