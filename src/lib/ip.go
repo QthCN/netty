@@ -12,6 +12,15 @@ type IpCmd struct {
 	Namespace string
 }
 
+func (ipCmd *IpCmd) getCmdPrefixArgvs() []string {
+	if ipCmd.GetNamespace() != "" {
+		return []string{"netns", "exec", ipCmd.GetNamespace(), "ip"}
+	} else {
+		return []string{}
+	}
+}
+
+//netns
 func (ipCmd *IpCmd) GetNamespace() string {
 	return ipCmd.Namespace
 }
@@ -45,14 +54,7 @@ func (ipCmd *IpCmd) ListNamespaces() ([]string, error) {
 	return strings.Split(string(d), "\n"), nil
 }
 
-func (ipCmd *IpCmd) getCmdPrefixArgvs() []string {
-	if ipCmd.GetNamespace() != "" {
-		return []string{"netns", "exec", ipCmd.GetNamespace(), "ip"}
-	} else {
-		return []string{}
-	}
-}
-
+//link
 func (ipCmd *IpCmd) ListInterfaces() ([]string, error) {
 	ifName := []string{}
 	argv := ipCmd.getCmdPrefixArgvs()
@@ -99,4 +101,17 @@ func (ipCmd *IpCmd) GetInterfaceDetails(ifName string) (map[string]string, error
 	details["state"] = matched[len(matched)-1]
 
 	return details, nil
+}
+
+func (ipCmd *IpCmd) SetInterfaceState(ifName string, state string) error {
+	state = strings.ToLower(state)
+	if state != "up" && state != "down" {
+		return &common.StrError{"state must in ('up', 'down')"}
+	}
+
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "link", "set", "dev", ifName, state)
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
 }

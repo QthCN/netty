@@ -44,3 +44,14 @@ Get interface detail ::
 
     details, e := ipCmd.GetInterfaceDetails("enp0s10")
     //details is map[mtu:1500 state:UP name:enp0s10]
+
+Set interface status ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "ns0",
+    }
+
+    e := ipCmd.SetInterfaceState("enp0s3", "up")
+    //enp0s3 is up
+    e := ipCmd.SetInterfaceState("enp0s3", "down")
+    //enp0s3 is down
