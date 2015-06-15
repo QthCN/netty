@@ -16,6 +16,8 @@ func main() {
 	//fmt.Print(r)
 	//fmt.Print(e)
 	//r, e := ipCmd.GetInterfaceDetails("lo")
-	e := ipCmd.SetInterfaceState("enp0s3", "up")
+	//e := ipCmd.AddVethPair("v0", "v1")
+	//fmt.Print(e)
+	e := ipCmd.DeleteVethPair("v0")
 	fmt.Print(e)
 }

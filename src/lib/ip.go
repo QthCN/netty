@@ -115,3 +115,22 @@ func (ipCmd *IpCmd) SetInterfaceState(ifName string, state string) error {
 	_, err := c.Output()
 	return err
 }
+
+func (ipCmd *IpCmd) AddVethPair(vethName string, peerName string) error {
+	if vethName == peerName {
+		return &common.StrError{"vethName cannot be same as peerName"}
+	}
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "link", "add", vethName, "type", "veth", "peer", "name", peerName)
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
+
+func (ipCmd *IpCmd) DeleteVethPair(vethName string) error {
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "link", "delete", vethName, "type", "veth")
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}

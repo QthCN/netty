@@ -55,3 +55,21 @@ Set interface status ::
     //enp0s3 is up
     e := ipCmd.SetInterfaceState("enp0s3", "down")
     //enp0s3 is down
+
+Add veth pair ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    e := ipCmd.AddVethPair("v0", "v1")
+    //veth pair v0 and v1 set up now
+
+Delete veth pair ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    e := ipCmd.DeleteVethPair("v0")
+    //veth v0 and it's peer are removed
