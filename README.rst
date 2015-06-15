@@ -82,3 +82,4 @@ Add interface into namespace ::
 
     e := ipCmd.AddInterfaceIntoNamespace("v0", "blue")
     //interface v0 now in namespace blue 
+
