@@ -73,3 +73,12 @@ Delete veth pair ::
 
     e := ipCmd.DeleteVethPair("v0")
     //veth v0 and it's peer are removed
+
+Add interface into namespace ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    e := ipCmd.AddInterfaceIntoNamespace("v0", "blue")
+    //interface v0 now in namespace blue 

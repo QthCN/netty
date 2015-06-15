@@ -54,6 +54,20 @@ func (ipCmd *IpCmd) ListNamespaces() ([]string, error) {
 	return strings.Split(string(d), "\n"), nil
 }
 
+func (ipCmd *IpCmd) ifNamespaceExist(ns string) bool {
+	namespaces, err := ipCmd.ListNamespaces()
+	if err != nil {
+		return false
+	}
+
+	for _, n := range namespaces {
+		if ns == n {
+			return true
+		}
+	}
+	return false
+}
+
 //link
 func (ipCmd *IpCmd) ListInterfaces() ([]string, error) {
 	ifName := []string{}
@@ -130,6 +144,18 @@ func (ipCmd *IpCmd) AddVethPair(vethName string, peerName string) error {
 func (ipCmd *IpCmd) DeleteVethPair(vethName string) error {
 	argv := ipCmd.getCmdPrefixArgvs()
 	argv = append(argv, "link", "delete", vethName, "type", "veth")
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
+
+func (ipCmd *IpCmd) AddInterfaceIntoNamespace(ifName string, ns string) error {
+	if ipCmd.ifNamespaceExist(ns) == false {
+		return &common.StrError{"namespace not exist"}
+	}
+
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "link", "set", ifName, "netns", ns)
 	c := exec.Command("ip", argv...)
 	_, err := c.Output()
 	return err
