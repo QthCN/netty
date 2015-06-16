@@ -160,3 +160,44 @@ func (ipCmd *IpCmd) AddInterfaceIntoNamespace(ifName string, ns string) error {
 	_, err := c.Output()
 	return err
 }
+
+//addr
+func (ipCmd *IpCmd) AddIPAddress(ifName string, ip string) error {
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "addr", "add", ip, "dev", ifName)
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
+
+func (ipCmd *IpCmd) DeleteIPAddress(ifName string, ip string) error {
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "addr", "del", ip, "dev", ifName)
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
+
+func (ipCmd *IpCmd) GetIPAddress(ifName string) ([]string, error) {
+	ipAddresses := []string{}
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "addr", "show", ifName)
+	c := exec.Command("ip", argv...)
+	d, err := c.Output()
+	if err != nil {
+		return []string{}, err
+	}
+
+	output := strings.Split(string(d), "\n")
+
+	for _, line := range output {
+		line = strings.TrimSpace(line)
+		items := strings.Split(line, " ")
+		if len(items) < 2 || (items[0] != "inet" && items[0] != "inet6") {
+			continue
+		}
+		ipAddresses = append(ipAddresses, items[1])
+	}
+
+	return ipAddresses, nil
+}

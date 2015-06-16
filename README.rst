@@ -83,3 +83,29 @@ Add interface into namespace ::
     e := ipCmd.AddInterfaceIntoNamespace("v0", "blue")
     //interface v0 now in namespace blue 
 
+Add IP ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    e := ipCmd.AddIPAddress("veth0", "10.5.5.5/24")
+    //veth0 has IP address "10.5.5.5/24" now
+
+Delete IP ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    e := ipCmd.DeleteIPAddress("veth0", "10.5.5.5/24")
+    //IP address "10.5.5.5/24" is removed
+
+Get IP ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    ipAddresses, e := ipCmd.GetIPAddress("veth0")
+    //ipAddresses is [10.5.5.5/24 10.6.5.5/24 10.7.5.5/24] now
