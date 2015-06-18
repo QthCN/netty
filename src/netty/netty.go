@@ -18,7 +18,7 @@ func main() {
 	//r, e := ipCmd.GetInterfaceDetails("lo")
 	//e := ipCmd.AddVethPair("v0", "v1")
 	//e := ipCmd.AddNamespace("blue")
-	d, e := ipCmd.GetIPAddress("veth0")
+	d, e := ipCmd.GetNeighInfo()
 	fmt.Print(d)
 	fmt.Print(e)
 	//e := ipCmd.DeleteVethPair("v0")

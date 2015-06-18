@@ -109,3 +109,12 @@ Get IP ::
 
     ipAddresses, e := ipCmd.GetIPAddress("veth0")
     //ipAddresses is [10.5.5.5/24 10.6.5.5/24 10.7.5.5/24] now
+
+Get neighbour info ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    NeighInfos, e := ipCmd.GetNeighInfo()
+    //NeighInfos is 'map[10.0.2.3:{10.0.2.3 enp0s8 08:00:27:48:dd:99 STALE} 10.0.2.1:{10.0.2.1 enp0s8 52:54:00:12:35:00 STALE}]'

@@ -201,3 +201,43 @@ func (ipCmd *IpCmd) GetIPAddress(ifName string) ([]string, error) {
 
 	return ipAddresses, nil
 }
+
+//neigh
+type NeighInfo struct {
+	Ip         string
+	IfName     string
+	MacAddress string
+	State      string
+}
+
+func (ipCmd *IpCmd) GetNeighInfo() (map[string]NeighInfo, error) {
+	NeighInfos := make(map[string]NeighInfo)
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "neigh", "show")
+	c := exec.Command("ip", argv...)
+	d, err := c.Output()
+	if err != nil {
+		return nil, err
+	}
+
+	output := strings.Split(string(d), "\n")
+	for _, line := range output {
+		line = strings.TrimSpace(line)
+		items := strings.Split(line, " ")
+		if len(items) < 6 {
+			continue
+		}
+		ip := items[0]
+		ifName := items[2]
+		macAddr := items[4]
+		state := items[5]
+
+		NeighInfos[ip] = NeighInfo{
+			Ip:         ip,
+			IfName:     ifName,
+			MacAddress: macAddr,
+			State:      state,
+		}
+	}
+	return NeighInfos, nil
+}
