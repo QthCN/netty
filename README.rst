@@ -118,3 +118,12 @@ Get neighbour info ::
 
     NeighInfos, e := ipCmd.GetNeighInfo()
     //NeighInfos is 'map[10.0.2.3:{10.0.2.3 enp0s8 08:00:27:48:dd:99 STALE} 10.0.2.1:{10.0.2.1 enp0s8 52:54:00:12:35:00 STALE}]'
+
+Flush neighbour info ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    e := ipCmd.FlushNeighInfo("enp0s8")
+    //NeighInfo are cleared on enp0s8

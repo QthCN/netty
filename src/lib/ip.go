@@ -241,3 +241,11 @@ func (ipCmd *IpCmd) GetNeighInfo() (map[string]NeighInfo, error) {
 	}
 	return NeighInfos, nil
 }
+
+func (ipCmd *IpCmd) FlushNeighInfo(ifName string) error {
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "neigh", "flush", "dev", ifName)
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
