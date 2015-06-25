@@ -127,3 +127,40 @@ Flush neighbour info ::
 
     e := ipCmd.FlushNeighInfo("enp0s8")
     //NeighInfo are cleared on enp0s8
+
+Add gateway ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    e := ipCmd.AddDefaultGateway("10.0.2.1", "", "", "enp0s8")
+    // default gateway is added
+
+Delete gateway ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    e := ipCmd.DeleteDefaultGateway("10.0.2.1", "", "enp0s8")
+    // default gateway is removed
+
+Add route ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    e := ipCmd.AddRoute("88.8.88.8/32", "192.168.56.200", "", "enp0s9")
+    // route is added
+
+Delete route ::
+
+    ipCmd := &lib.IpCmd{
+        Namespace: "",
+    }
+
+    e := ipCmd.DeleteRoute("88.8.88.8/32", "192.168.56.200", "", "enp0s9")
+    // route is removed
+

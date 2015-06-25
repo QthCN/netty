@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -245,6 +246,58 @@ func (ipCmd *IpCmd) GetNeighInfo() (map[string]NeighInfo, error) {
 func (ipCmd *IpCmd) FlushNeighInfo(ifName string) error {
 	argv := ipCmd.getCmdPrefixArgvs()
 	argv = append(argv, "neigh", "flush", "dev", ifName)
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
+
+//route
+func (ipCmd *IpCmd) AddDefaultGateway(gateway string, metric string,
+	table string, ifName string) error {
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "route", "replace", "default", "via", gateway)
+	if metric != "" {
+		argv = append(argv, "metric", metric)
+	}
+	argv = append(argv, "dev", ifName)
+	if table != "" {
+		argv = append(argv, "table", table)
+	}
+	fmt.Print(argv)
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
+
+func (ipCmd *IpCmd) DeleteDefaultGateway(gateway string, table string,
+	ifName string) error {
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "route", "del", "default", "via", gateway, "dev", ifName)
+	if table != "" {
+		argv = append(argv, "table", table)
+	}
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
+
+func (ipCmd *IpCmd) AddRoute(cidr string, ip string, table string, ifName string) error {
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "route", "replace", cidr, "via", ip, "dev", ifName)
+	if table != "" {
+		argv = append(argv, "table", table)
+	}
+	c := exec.Command("ip", argv...)
+	_, err := c.Output()
+	return err
+}
+
+func (ipCmd *IpCmd) DeleteRoute(cidr string, ip string, table string, ifName string) error {
+	argv := ipCmd.getCmdPrefixArgvs()
+	argv = append(argv, "route", "del", cidr, "via", ip, "dev", ifName)
+	if table != "" {
+		argv = append(argv, "table", table)
+	}
 	c := exec.Command("ip", argv...)
 	_, err := c.Output()
 	return err
